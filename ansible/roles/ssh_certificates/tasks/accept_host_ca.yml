@@ -54,13 +54,16 @@
         marker: "# {mark} ANSIBLE MANAGED BLOCK: {{ service_name }} host-stanza {{ env }}/{{ site }} {{ domain }}"
         block: |
           # Purpose: host stanza auto-managed by the ssh-certs ansible role
-          # using key: {{ user_ssh_key_filename }}
+          # using key: {{ user_ssh_key_filename }} (source: {{ user_key_source }})
           # Source: https://github.com/genirohtea/ssh-certs
           # Configured via: ansible/setup_user_workstation.sh (accept_host_ca tag)
           Host {{ domain }}
             StrictHostKeyChecking yes
             User root
+            CertificateFile ~/.ssh/{{ user_ssh_key_filename }}-cert.pub
+          {% if user_key_source == "generate" %}
             IdentityFile ~/.ssh/{{ user_ssh_key_filename }}
+          {% endif %}
             AddKeysToAgent yes
             # Multiplex connections since we use ansible quite a bit
             ControlMaster auto

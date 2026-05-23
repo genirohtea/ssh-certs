@@ -40,6 +40,9 @@ Available options:
 -S, --use_ssh_pass Use password based ssh authentication
 -p, --principals  The principals to sign the certificate for (in addition to the user)
 -r, --add_root    Adds root to the principals
+-k, --user_key_source  Source of the user SSH key to sign: "agent" (default — pull
+                  from the running ssh-agent, matched by comment "<user>-<env>-<site>")
+                  or "generate" (create an Ed25519 keypair on disk)
 EOF
   exit
 }
@@ -54,6 +57,7 @@ die() {
 tags=''
 add_root='false'
 use_ssh_pass='false'
+user_key_source='agent'
 parse_params() {
   while :; do
     case "${1-}" in
@@ -96,6 +100,10 @@ parse_params() {
         ;;
       -r | --add_root) add_root='true' ;;         # example flag
       -S | --use_ssh_pass) use_ssh_pass='true' ;; # example flag
+      -k | --user_key_source)
+        user_key_source="${2-}"
+        shift
+        ;;
       -?*) die "Unknown option: $1" ;;
       *) break ;;
     esac
@@ -124,6 +132,10 @@ parse_params() {
     principals="${principals},root"
   fi
 
+  if [[ "${user_key_source}" != "agent" && "${user_key_source}" != "generate" ]]; then
+    die "Invalid --user_key_source: ${user_key_source} (must be 'agent' or 'generate')"
+  fi
+
   return 0
 }
 
@@ -142,6 +154,7 @@ msg "- user: ${user-}"
 msg "- domain: ${domain-}"
 msg "- expiry: ${expiry-}"
 msg "- principals: ${principals-}"
+msg "- user_key_source: ${user_key_source-}"
 
 read -p "Please confirm arguments: " -n 1 -r
 echo # move to a new line
@@ -175,7 +188,7 @@ pushd "${ansible_dir}"
 set -x
 
 # shellcheck disable=SC2086
-ansible-playbook setup_user_workstation.yml ${ssh_pass:-} ${verbosity:-} ${tags} --extra-vars '{"site": "'"${site}"'", "env": "'"${env}"'", "user": "'"${user}"'", "expiry": "'"${expiry}"'", "principals": "'"${principals}"'", "domain": "'"${domain}"'" }' -i "${host}", ${localhost_args}
+ansible-playbook setup_user_workstation.yml ${ssh_pass:-} ${verbosity:-} ${tags} --extra-vars '{"site": "'"${site}"'", "env": "'"${env}"'", "user": "'"${user}"'", "expiry": "'"${expiry}"'", "principals": "'"${principals}"'", "domain": "'"${domain}"'", "user_key_source": "'"${user_key_source}"'" }' -i "${host}", ${localhost_args}
 
 # Turn off verbosity
 set -x

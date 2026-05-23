@@ -11,6 +11,13 @@ sign_user_key: false
 accept_host_ca: false
 accept_user_ca: false
 
+# Source of the user public key to sign in sign_user_key:
+#   "agent"    — pull the matching public key from the running ssh-agent (matched
+#                by comment == "ssh-certs {{ user }}-{{ env }}-{{ site }}");
+#                private key never touches disk. Fails if no such key is loaded.
+#   "generate" — create an Ed25519 keypair on disk if one does not already exist
+user_key_source: "agent"
+
 # BWS secret IDs for the SSH CA keys, keyed by "{{ ca_type }}-{{ ca_key_type }}".
 # These default values point at the original genirohtea/ssh-certs deployment.
 # Override this in your consuming playbook with the IDs from your own BWS
