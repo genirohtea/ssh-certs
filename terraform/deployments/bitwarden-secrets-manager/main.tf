@@ -9,10 +9,8 @@ resource "time_static" "rotate" {
   rfc3339 = time_rotating.key_rotation_interval.id
 }
 
-# RSA key of size 4096 bits
 resource "tls_private_key" "userca-key" {
   algorithm = var.key_type
-  rsa_bits  = var.key_size
   lifecycle {
     replace_triggered_by = [
       time_static.rotate
@@ -22,7 +20,6 @@ resource "tls_private_key" "userca-key" {
 
 resource "tls_private_key" "hostca-key" {
   algorithm = var.key_type
-  rsa_bits  = var.key_size
   lifecycle {
     replace_triggered_by = [
       time_static.rotate
@@ -47,12 +44,12 @@ locals {
 
 ##### Project Finding
 
-data "bitwarden-secrets_project_list" "all_projects" {
+data "bitwarden-secrets_projects" "all_projects" {
 }
 
 locals {
   matching_projects = [
-    for project in data.bitwarden-secrets_project_list.all_projects.projects : project
+    for project in data.bitwarden-secrets_projects.all_projects.projects : project
     if project.name == var.site
   ]
 
@@ -73,12 +70,11 @@ resource "bitwarden-secrets_secret" "userca-key" {
 
   key = format("%s-%s", local.userca_key_name, local.key_comps[count.index]["field_key"])
 
-  # TODO: The single quotes are currently a hack around: https://github.com/sebastiaan-dev/terraform-provider-bitwarden-secrets/issues/5
-  value = format("'%s'", tls_private_key.userca-key[local.key_comps[count.index]["field_name"]])
+  value = tls_private_key.userca-key[local.key_comps[count.index]["field_name"]]
 
   note = jsonencode({
     content_type    = local.key_comps[count.index]["field_name"]
-    expiration_date = timeadd(time_rotating.key_rotation_interval.rotation_rfc3339, "720h") # 30 Day buffer on key expiration
+    expiration_date = timeadd(time_rotating.key_rotation_interval.rotation_rfc3339, "8760h") # 1 Year buffer on key expiration
     environment     = terraform.workspace
     service         = var.service
     site            = var.site
@@ -95,12 +91,11 @@ resource "bitwarden-secrets_secret" "hostca-key" {
 
   key = format("%s-%s", local.hostca_key_name, local.key_comps[count.index]["field_key"])
 
-  # TODO: The single quotes are currently a hack around: https://github.com/sebastiaan-dev/terraform-provider-bitwarden-secrets/issues/5
-  value = format("'%s'", tls_private_key.hostca-key[local.key_comps[count.index]["field_name"]])
+  value = tls_private_key.hostca-key[local.key_comps[count.index]["field_name"]]
 
   note = jsonencode({
     content_type    = local.key_comps[count.index]["field_name"]
-    expiration_date = timeadd(time_rotating.key_rotation_interval.rotation_rfc3339, "720h") # 30 Day buffer on key expiration
+    expiration_date = timeadd(time_rotating.key_rotation_interval.rotation_rfc3339, "8760h") # 1 Year buffer on key expiration
     environment     = terraform.workspace
     service         = var.service
     site            = var.site

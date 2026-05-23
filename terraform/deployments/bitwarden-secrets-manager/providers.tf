@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     bitwarden-secrets = {
-      source  = "registry.terraform.io/sebastiaan-dev/bitwarden-secrets"
-      version = ">=0.1.2"
+      source  = "bitwarden/bitwarden-secrets"
+      version = "0.5.4-pre"
     }
   }
 
@@ -48,5 +48,8 @@ terraform {
 
 # Configure the provider
 provider "bitwarden-secrets" {
-  access_token = var.access_token
+  access_token    = var.access_token
+  organization_id = var.organization_id
+  api_url         = var.api_url
+  identity_url    = var.identity_url
 }

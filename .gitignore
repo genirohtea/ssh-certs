@@ -11,6 +11,7 @@
 *.log
 temp/
 build/
+.claude/
 
 megalinter-reports
 
@@ -24,3 +25,5 @@ kubeconfig
 **/.terraform
 **/*.auto.tfvars
 **/*.tfvars
+**/*.bw-provider-state
+**/terraform.tfstate.backup

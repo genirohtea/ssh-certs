@@ -1,0 +1,10 @@
+[env]
+# Paralellism set to 1 since BWS cant handle rapid update
+TF_CLI_ARGS_apply = "-parallelism=1"
+TF_CLI_ARGS_plan = "-parallelism=1"
+TF_CLI_ARGS_destroy = "-parallelism=1"
+TF_CLI_ARGS_refresh = "-parallelism=1"
+
+TF_VAR_access_token = "{{ env.BWS_ACCESS_TOKEN }}"
+TF_VAR_organization_id = "{{ exec(command='bws secret get 6db508c5-f322-472d-88ae-b447003f41a2 --output json | jq -r .value') }}"
+TF_VAR_state_passphrase = "{{ exec(command='bws secret get bf9357b3-211f-4b7f-8f17-b44700405bef --output json | jq -r .value') }}"
