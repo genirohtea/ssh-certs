@@ -1,0 +1,61 @@
+---
+# MANAGED BY TEMPLATE (copied 2026-05-23 from 6bed4) — do not edit. Sync from the source template; user must manage overwrites.
+name: Create Release
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-create:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Mint GitHub App installation token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Generate release, changelog.
+        uses: googleapis/release-please-action@v5.0.0
+        with:
+          # GitHub App installation token from the shared automation App
+          # (same `GH_APP_ID` / `GH_APP_PRIVATE_KEY` used by renovate.yml
+          # and any other automation workflow). Required over the built-in
+          # GITHUB_TOKEN so the release PR triggers downstream workflows
+          # like lint and test — PRs opened with GITHUB_TOKEN are
+          # suppressed by GitHub's loop-prevention rule. See the README
+          # section "Authorizing automation with a GitHub App".
+          token: ${{ steps.app-token.outputs.token }}
+          # this is a built-in strategy in release-please, see "Action Inputs"
+          # for more options
+          release-type: simple
+
+  release-issues:
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Mint GitHub App installation token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Check out the codebase.
+        uses: actions/checkout@v6
+
+      - name: "TODO to Issue"
+        uses: "alstr/todo-to-issue-action@v5.1.14"
+        with:
+          PROJECTS_SECRET: ${{ steps.app-token.outputs.token }}
+          # Add ignore regex here
+          # IGNORE: "plugins.*"
+
+# END MANAGED TEMPLATE — add custom content below

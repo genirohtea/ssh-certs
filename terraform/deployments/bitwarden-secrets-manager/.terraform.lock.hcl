@@ -16,7 +16,8 @@ provider "registry.opentofu.org/bitwarden/bitwarden-secrets" {
 }
 
 provider "registry.opentofu.org/hashicorp/time" {
-  version = "0.13.1"
+  version     = "0.13.1"
+  constraints = "~> 0.13"
   hashes = [
     "h1:3X1jTAlLJV6G9AylC+BgX7WrKFcZYHqA+Z4JwB+v7as=",
     "zh:10f32af8b544a039f19abd546e345d056a55cb7bdd69d5bbd7322cbc86883848",
@@ -33,7 +34,8 @@ provider "registry.opentofu.org/hashicorp/time" {
 }
 
 provider "registry.opentofu.org/hashicorp/tls" {
-  version = "4.2.1"
+  version     = "4.2.1"
+  constraints = "~> 4.2"
   hashes = [
     "h1:ZilRQg3gaNxvWpwnrjV3ZyU4dXI0yQfgsxu2swX9E14=",
     "zh:0435b85c1aa6ac9892e88d99eaae0b1712764b236bf469c114c6ff4377b113d6",
@@ -45,27 +47,5 @@ provider "registry.opentofu.org/hashicorp/tls" {
     "zh:cb8ca2de5f7367d987a23f88c76d80480bcc49da8bdc3fd24dd9b19d3428d72d",
     "zh:eb88588123dd53175463856d4e2323fb0da44bdcf710ec34f2cad6737475638b",
     "zh:f92baceb82d3a1e5b6a34a29c605b54cae8c6b09ea1fffb0af4d036337036a8f",
-  ]
-}
-
-provider "registry.opentofu.org/sebastiaan-dev/bitwarden-secrets" {
-  version = "0.1.2"
-  hashes = [
-    "h1:NDAcduoe6xA+VZ8XYD8Apvzg8cYx/aHPO8p7HXizQqg=",
-    "zh:0e9ec30a18ac9364e0b8283e652db25477d516eed7fb6772ed8b1bb0c8d02226",
-    "zh:0f6cf176fdbac152776b9f3c8eac83c2584e86383a16d31ced514d40f7603db0",
-    "zh:316d65414213443aa2c9f7fcef65b893b8c169e767f5f1270a20df907227eb45",
-    "zh:517e8e104a5142e8879711c7019c175797a2a6e7d032e29c9edaf83c7e29496a",
-    "zh:5747352c33e7faea1b0f64ad6d5d81eda03d046d2a7655db66ecd4770385ee7e",
-    "zh:8253fb88e2f73083cd39d413d4d27914ff14b8bfb814134290d8fb987c6b8cd4",
-    "zh:8647cfc74705ffdd96d327536cb5a79868732355f8adc1eb75d0a9beca8604c9",
-    "zh:868fba3870247c611e2eb12907f5007ba400ff03fdfb04d29a17e7b5e5c7f1e2",
-    "zh:890df766e9b839623b1f0437355032a3c006226a6c200cd911e15ee1a9014e9f",
-    "zh:97c881652ec8ce3c0fb9a902bfeff798403487da3e247292f408893d1ab5f9a4",
-    "zh:9d3b8d6dc7111ed00be691e871e4d2fcf974bbf6226a4068e57b74db25f2ecf1",
-    "zh:b289543e00305e67f9f2e205988203c0319748af95678fd729465e7583983821",
-    "zh:bfd56bacf3db94250c05decf3cdc61b895c09e28037ace670eb93a79f1866dc7",
-    "zh:c340ecfe40e034d1c6e5905354083af18f33fb6677b8deb9b43e0e1921d4ea64",
-    "zh:d1fab6c4ce7e554430af916a2b82a21aeffa2ee9cbd7daf604427321b10b97da",
   ]
 }

@@ -1,0 +1,8 @@
+# MANAGED BY TEMPLATE (copied 2026-05-23 from 6bed4) — do not edit. Sync from the source template; user must manage overwrites.
+[allowlist]
+  description = "Ignore Bitwarden Secrets Manager lookups"
+  regexes = [
+    '''bitwarden_secrets_manager'''
+  ]
+
+# END MANAGED TEMPLATE — add custom content below

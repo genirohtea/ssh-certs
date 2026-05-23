@@ -82,7 +82,7 @@ resource "bitwarden-secrets_secret" "userca-key" {
 
   project_id = local.project_id
 
-  # BWS rate limits aggresively, -parallelism 1 is required
+  # BWS rate limits aggressively, -parallelism 1 is required
   depends_on = [time_sleep.wait_3_seconds]
 }
 
@@ -103,6 +103,6 @@ resource "bitwarden-secrets_secret" "hostca-key" {
 
   project_id = local.project_id
 
-  # BWS rate limits aggresively, -parallelism 1 is required
+  # BWS rate limits aggressively, -parallelism 1 is required
   depends_on = [time_sleep.wait_3_seconds]
 }

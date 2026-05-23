@@ -6,9 +6,9 @@
 ### Features
 
 * **ansible scripts:** added ssh based pass auth flag defaulting to host key auth ([3c6f1ae](https://github.com/genirohtea/ssh-certs/commit/3c6f1aed069563be8510bce0eef2a138692cbe1a))
-* **azure:** factored out azure secret retreival in preparation for bws ([0dfde9b](https://github.com/genirohtea/ssh-certs/commit/0dfde9b2783732881e17a4b1bbf2e5194c1a44e6))
+* **azure:** factored out azure secret retrieval in preparation for bws ([0dfde9b](https://github.com/genirohtea/ssh-certs/commit/0dfde9b2783732881e17a4b1bbf2e5194c1a44e6))
 * **bitwarden secrets:** added matching secret creation implementation for bitwarden secrets manager ([3bc778f](https://github.com/genirohtea/ssh-certs/commit/3bc778f1a7054f18dd2d6c26334867ca25130769))
-* **bws:** added bws implementation as default secret retrival ([c913f03](https://github.com/genirohtea/ssh-certs/commit/c913f03ec4618573fe1d63c6b242630cdfab42cd))
+* **bws:** added bws implementation as default secret retrieval ([c913f03](https://github.com/genirohtea/ssh-certs/commit/c913f03ec4618573fe1d63c6b242630cdfab42cd))
 
 
 ### Bug Fixes
@@ -27,4 +27,4 @@
 
 ### Bug Fixes
 
-* **host key:** fixed issue where ansible wouldnt create cert due to existing file ([d37d55f](https://github.com/genirohtea/ssh-certs/commit/d37d55f71d61cf01c3966e0c84693434b63f4c24))
+* **host key:** fixed issue where ansible would not create cert due to existing file ([d37d55f](https://github.com/genirohtea/ssh-certs/commit/d37d55f71d61cf01c3966e0c84693434b63f4c24))

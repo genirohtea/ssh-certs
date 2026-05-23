@@ -1,0 +1,32 @@
+---
+# MANAGED BY TEMPLATE (copied 2026-05-23 from 6bed4) — do not edit. Sync from the source template; user must manage overwrites.
+name: Lint
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint-precommit:
+    permissions:
+      contents: read
+
+    # prek (Rust reimplementation of pre-commit) reads the same
+    # .pre-commit-config.yaml. Run it in the default github workspace.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v6
+
+      # The `ty` hook in .pre-commit-config.yaml shells out to `uvx ty check`
+      # (language: system), so `uv` must be on PATH before prek runs.
+      - name: Install uv (provides uvx for the ty hook).
+        uses: astral-sh/setup-uv@v7
+
+      - name: Run the pre-commit linters via prek.
+        uses: j178/prek-action@v2.0.3
+        with:
+          extra-args: --all-files
+
+# END MANAGED TEMPLATE — add custom content below

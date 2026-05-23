@@ -56,43 +56,43 @@ use_ssh_pass='false'
 parse_params() {
   while :; do
     case "${1-}" in
-    -h | --help) usage ;;
-    -v | --verbose)
-      set -x
-      verbosity="-vvv"
-      ;;
-    -t | --tags)
-      tags="${2-}"
-      shift
-      ;;
-    -H | --host)
-      host="${2-}"
-      shift
-      ;;
-    -s | --site)
-      site="${2-}"
-      shift
-      ;;
-    -e | --env)
-      env="${2-}"
-      shift
-      ;;
-    -a | --ansible_user)
-      ansible_user="${2-}"
-      shift
-      ;;
-    -E | --expiry)
-      expiry="${2-}"
-      shift
-      ;;
-    -p | --principals)
-      extra_principals="${2-}"
-      shift
-      ;;
-    -d | --disable_key_check) disable_key_check='true' ;; # example flag
-    -S | --use_ssh_pass) use_ssh_pass='true' ;;           # example flag
-    -?*) die "Unknown option: $1" ;;
-    *) break ;;
+      -h | --help) usage ;;
+      -v | --verbose)
+        set -x
+        verbosity="-vvv"
+        ;;
+      -t | --tags)
+        tags="${2-}"
+        shift
+        ;;
+      -H | --host)
+        host="${2-}"
+        shift
+        ;;
+      -s | --site)
+        site="${2-}"
+        shift
+        ;;
+      -e | --env)
+        env="${2-}"
+        shift
+        ;;
+      -a | --ansible_user)
+        ansible_user="${2-}"
+        shift
+        ;;
+      -E | --expiry)
+        expiry="${2-}"
+        shift
+        ;;
+      -p | --principals)
+        extra_principals="${2-}"
+        shift
+        ;;
+      -d | --disable_key_check) disable_key_check='true' ;; # example flag
+      -S | --use_ssh_pass) use_ssh_pass='true' ;;           # example flag
+      -?*) die "Unknown option: $1" ;;
+      *) break ;;
     esac
     shift
   done

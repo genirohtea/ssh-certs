@@ -1,8 +1,18 @@
 terraform {
+  required_version = ">= 1.8.0"
+
   required_providers {
     bitwarden-secrets = {
       source  = "bitwarden/bitwarden-secrets"
       version = "0.5.4-pre"
+    }
+    time = {
+      source  = "hashicorp/time"
+      version = "~> 0.13"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.2"
     }
   }
 
