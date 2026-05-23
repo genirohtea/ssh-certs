@@ -1,7 +1,0 @@
----
-# vars file for ssh_certificates
-#
-# Intentionally empty. All tunable values live in defaults/main.yml so
-# consumers can override them via playbook `vars:`, group_vars, or host_vars.
-# Anything placed here would take precedence over those sources and break
-# consumer overrides.

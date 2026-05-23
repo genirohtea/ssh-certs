@@ -1,0 +1,3 @@
+[submodule "ansible/roles/ssh_certificates"]
+  path = ansible/roles/ssh_certificates
+  url = git@github-genirohtea:genirohtea/ssh-certs-ansible.git
