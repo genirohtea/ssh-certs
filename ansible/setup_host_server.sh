@@ -137,6 +137,15 @@ msg "- site: ${site-}"
 msg "- ansible_user: ${ansible_user-}"
 msg "- expiry: ${expiry-}"
 msg "- principals: ${principals-}"
+msg "- use_ssh_pass: ${use_ssh_pass-}"
+
+if [[ "${use_ssh_pass}" != "true" ]]; then
+  msg ""
+  msg "NOTE: --use_ssh_pass is NOT set. If key-based SSH auth to ${host} as"
+  msg "      ${ansible_user} has not been configured yet, re-run with"
+  msg "      --use_ssh_pass to authenticate with a password instead."
+  msg ""
+fi
 
 read -p "Please confirm arguments: " -n 1 -r
 echo # move to a new line

@@ -1,26 +1,7 @@
 ---
-# The site that will be connected to
-# site: <site_name>
-# The environment in the site that will be connected to
-# env: prod
-
-# Use the CA if the hostname matches this regex
-# domain: "*<site_name>.<user>.com"
-
-# Used in the convention naming of the User SSH private key
-# Also used to revoke the ssh certificate
-# Also what is shown in the ssh logs
-# user: "<user>"
-
-# The certificates identity
-# Also used to revoke certificate
-# Recommended as hostname
-# identity: "curie"
-
-# A list of hostnames that are used by clients to connect to this server
-# Present this certificate when these domains/hostnames used to connect to the server
-# OR, Users you will be allowed to log in as on the server
-# principals: "curie,curie.<site_name>.<user>.com"
-
-# The expiration of your ssh certificate
-# expiry: "+395d"
+# vars file for ssh_certificates
+#
+# Intentionally empty. All tunable values live in defaults/main.yml so
+# consumers can override them via playbook `vars:`, group_vars, or host_vars.
+# Anything placed here would take precedence over those sources and break
+# consumer overrides.

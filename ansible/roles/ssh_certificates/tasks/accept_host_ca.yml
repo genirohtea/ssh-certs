@@ -10,17 +10,12 @@
     secret_name: "kvk-{{ service_name }}-{{ env }}-{{ site }}-{{ ca_type }}-{{ ca_key_type }}"
     resource_group_name: "rg-{{ service_name }}-{{ env }}-{{ site }}"
 
-    # BWS Implementation
-    bws_secret_id: "b4abe05f-ecf3-4812-9644-b1cf016eb060"
-
     # General
     user_ssh_key_filename: "{{ user }}-{{ env }}-{{ site }}"
 
   block:
     - name: "Retrieving secrets using Azure"
-      when:
-        - use_azure is defined
-        - use_azure
+      when: use_azure | bool
       block:
         - name: Get Key Vault by name
           azure.azcollection.azure_rm_keyvault_info:
@@ -48,17 +43,11 @@
             task_failed: true
 
     - name: "Retrieving secrets using BWS"
-      when:
-        - use_azure is not defined or not use_azure
+      when: not (use_azure | bool)
       block:
         - name: "Get secret value"
           ansible.builtin.set_fact:
-            bws_secret_value: "{{ lookup('community.general.bitwarden_secrets_manager', bws_secret_id).value }}"
-
-        # TODO: The single quotes are currently a hack around: https://github.com/sebastiaan-dev/terraform-provider-bitwarden-secrets/issues/5
-        - name: "Remove leading and trailing single quotes from bws_secret_value"
-          ansible.builtin.set_fact:
-            ssh_key: '{{ bws_secret_value | regex_replace("^''|''$", '''', multiline=True) }}'
+            ssh_key: "{{ lookup('community.general.bitwarden_secrets_manager', bws_secret_ids[ca_type + '-' + ca_key_type]).value }}"
 
       rescue:
         - name: "Getting secrets from BWS failed"
@@ -77,25 +66,51 @@
         mode: 0600
 
     - name: Add cert authority for hostkey checking
-      ansible.builtin.lineinfile:
-        state: present
-        dest: "~/.ssh/known_hosts"
-        line: "@cert-authority {{ domain }} {{ ssh_key }}"
-        search_string: "@cert-authority {{ domain }}"
+      ansible.builtin.blockinfile:
+        path: "~/.ssh/known_hosts"
+        create: true
+        mode: 0600
+        marker: "# {mark} ANSIBLE MANAGED BLOCK: {{ service_name }} cert-authority {{ env }}/{{ site }} {{ domain }}"
+        block: |
+          # Purpose: tell the local ssh client to trust host certificates
+          #   matching {{ domain }} that were signed by our host CA, so
+          #   connections succeed without a TOFU prompt and stay trusted
+          #   across host-key rotations.
+          # Managed by the ssh-certs ansible role
+          # Source: https://github.com/genirohtea/ssh-certs
+          # Configured via: ansible/setup_user_workstation.sh (accept_host_ca tag)
+          @cert-authority {{ domain }} {{ ssh_key }}
 
-    - name: Add a host in the configuration
-      community.general.ssh_config:
-        ssh_config_file: "~/.ssh/config"
-        strict_host_key_checking: "yes"
-        remote_user: root
-        host: "{{ domain }}"
-        identity_file: "~/.ssh/{{ user_ssh_key_filename }}"
-        state: present
-        add_keys_to_agent: true
-        controlmaster: auto # Since we use ansible quite a bit
-        controlpersist: 600
-        forward_agent: false # We generally dont need this and adds a security risk
+    - name: Add host stanza to ssh config
+      ansible.builtin.blockinfile:
+        path: "~/.ssh/config"
+        create: true
+        mode: 0600
+        marker: "# {mark} ANSIBLE MANAGED BLOCK: {{ service_name }} host-stanza {{ env }}/{{ site }} {{ domain }}"
+        block: |
+          # Purpose: host stanza auto-managed by the ssh-certs ansible role
+          # using key: {{ user_ssh_key_filename }}
+          # Source: https://github.com/genirohtea/ssh-certs
+          # Configured via: ansible/setup_user_workstation.sh (accept_host_ca tag)
+          Host {{ domain }}
+            StrictHostKeyChecking yes
+            User root
+            IdentityFile ~/.ssh/{{ user_ssh_key_filename }}
+            AddKeysToAgent yes
+            # Multiplex connections since we use ansible quite a bit
+            ControlMaster auto
+            ControlPersist 600
+            # We generally dont need agent forwarding and it adds a security risk
+            ForwardAgent no
   rescue:
     - name: "Configuring to accept Host CA failed"
       ansible.builtin.set_fact:
         task_failed: true
+
+  always:
+    # Always delete the on-disk CA private key, even if signing failed
+    - name: Delete CA private key tempfile
+      ansible.builtin.file:
+        path: "{{ ssh_key_file.path }}"
+        state: absent
+      when: ssh_key_file.path is defined

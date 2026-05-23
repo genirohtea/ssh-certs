@@ -8,30 +8,22 @@
     - name: "Sign host key"
       ansible.builtin.include_tasks:
         file: "sign_host_key.yml"
-      when:
-        - sign_host_key is defined
-        - sign_host_key
+      when: sign_host_key | bool
 
     - name: "Accept user certificate"
       ansible.builtin.include_tasks:
         file: "accept_user_ca.yml"
-      when:
-        - accept_user_ca is defined
-        - accept_user_ca
+      when: accept_user_ca | bool
 
     - name: "Sign user key"
       ansible.builtin.include_tasks:
         file: "sign_user_key.yml"
-      when:
-        - sign_user_key is defined
-        - sign_user_key
+      when: sign_user_key | bool
 
     - name: "Accept host certificate"
       ansible.builtin.include_tasks:
         file: "accept_host_ca.yml"
-      when:
-        - accept_host_ca is defined
-        - accept_host_ca
+      when: accept_host_ca | bool
 
   rescue:
     - name: "SSH certificate setup failed"

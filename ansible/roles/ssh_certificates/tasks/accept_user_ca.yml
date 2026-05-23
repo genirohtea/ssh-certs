@@ -10,16 +10,11 @@
     secret_name: "kvk-{{ service_name }}-{{ env }}-{{ site }}-{{ ca_type }}-{{ ca_key_type }}"
     resource_group_name: "rg-{{ service_name }}-{{ env }}-{{ site }}"
 
-    # BWS Implementation
-    bws_secret_id: "37dcd427-3069-43ec-b083-b1cf016eb36b"
-
     # General
     ca_public_key_path: "/etc/ssh/{{ secret_name }}.pub"
   block:
     - name: "Retrieving secrets using Azure"
-      when:
-        - use_azure is defined
-        - use_azure
+      when: use_azure | bool
       block:
         - name: Get Key Vault by name
           azure.azcollection.azure_rm_keyvault_info:
@@ -48,17 +43,11 @@
             task_failed: true
 
     - name: "Retrieving secrets using BWS"
-      when:
-        - use_azure is not defined or not use_azure
+      when: not (use_azure | bool)
       block:
         - name: "Get secret value"
           ansible.builtin.set_fact:
-            bws_secret_value: "{{ lookup('community.general.bitwarden_secrets_manager', bws_secret_id).value }}"
-
-        # TODO: The single quotes are currently a hack around: https://github.com/sebastiaan-dev/terraform-provider-bitwarden-secrets/issues/5
-        - name: "Remove leading and trailing single quotes from bws_secret_value"
-          ansible.builtin.set_fact:
-            ssh_key: '{{ bws_secret_value | regex_replace("^''|''$", '''', multiline=True) }}'
+            ssh_key: "{{ lookup('community.general.bitwarden_secrets_manager', bws_secret_ids[ca_type + '-' + ca_key_type]).value }}"
 
       rescue:
         - name: "Getting secrets from BWS failed"
@@ -86,13 +75,19 @@
         line: "{{ ssh_key }}"
         mode: 0600
 
-    - name: Update sshd_config for the new user certificate
-      ansible.builtin.lineinfile:
-        state: present
-        dest: "/etc/ssh/sshd_config"
-        line: "TrustedUserCAKeys {{ ca_public_key_path }}"
+    - name: Mark sshd_config TrustedUserCAKeys as managed by this repo
+      ansible.builtin.blockinfile:
+        path: "/etc/ssh/sshd_config"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK: {{ service_name }} TrustedUserCAKeys {{ env }}/{{ site }}"
+        block: |
+          # Purpose: tell sshd to accept user logins authenticated by
+          #   certificates signed by our user CA (instead of, or in addition
+          #   to, raw public keys in ~/.ssh/authorized_keys).
+          # Managed by the ssh-certs ansible role
+          # Source: https://github.com/genirohtea/ssh-certs
+          # Configured via: ansible/setup_host_server.sh (accept_user_ca tag)
+          TrustedUserCAKeys {{ ca_public_key_path }}
         insertafter: "HostCertificate"
-        search_string: "TrustedUserCAKeys {{ ca_public_key_path }}"
 
     - name: Restart the sshd daemon
       ansible.builtin.service:
@@ -103,3 +98,11 @@
     - name: "Configuring to accept User CA failed"
       ansible.builtin.set_fact:
         task_failed: true
+
+  always:
+    # Always delete the on-disk CA private key, even if signing failed
+    - name: Delete CA private key tempfile
+      ansible.builtin.file:
+        path: "{{ ssh_key_file.path }}"
+        state: absent
+      when: ssh_key_file.path is defined

@@ -1,3 +1,41 @@
 ---
 # defaults file for ssh_certificates
+
+# Identifier used to namespace secret/vault names and ansible managed blocks.
+# Override per-deployment if you run multiple ssh-certs deployments.
 service_name: "sshcerts"
+
+# Which sub-tasks to run. Consumers enable the ones they need via role vars.
+sign_host_key: false
+sign_user_key: false
+accept_host_ca: false
+accept_user_ca: false
+
+# Secret backend selection. When true, retrieve CA keys from Azure Key Vault.
+# When false (default), retrieve them from Bitwarden Secrets Manager.
+use_azure: false
+
+# BWS secret IDs for the SSH CA keys, keyed by "{{ ca_type }}-{{ ca_key_type }}".
+# These default values point at the original genirohtea/ssh-certs deployment.
+# Override this in your consuming playbook with the IDs from your own BWS
+# project — note that ansible's default hash_behaviour replaces (not merges)
+# dicts, so provide all four keys.
+bws_secret_ids:
+  hostca-priopenssh: "3ddeb792-650e-431e-98ef-b44700134f36"
+  hostca-pubopenssh: "48ae76df-7169-4fc8-9e01-b4470013f10a"
+  userca-priopenssh: "c3b4968e-88f0-45dc-a7b9-b4470013f212"
+  userca-pubopenssh: "e234e8f8-178a-4f11-b0d0-b44700134f30"
+
+# Required vars (no defaults — must be provided by the consumer):
+#   env                Environment name, e.g. "prod"
+#   site               Site/tenant name
+#   user               Username, used in the user SSH key filename
+#                      (sign_user_key / accept_host_ca only)
+#   domain             Hostname or glob the user connects to
+#                      (accept_host_ca only)
+#   identity           Cert identity, recommended as the hostname
+#                      (sign_host_key / sign_user_key only)
+#   principals         Comma-separated list of valid principals
+#                      (sign_host_key / sign_user_key only)
+#   expiry             ssh-keygen -V value, e.g. "+395d"
+#                      (sign_host_key / sign_user_key only)
