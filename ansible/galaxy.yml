@@ -5,7 +5,7 @@
 namespace: geniroh
 
 # The name of the collection. Has the same character restrictions as 'namespace'
-name: azure_ssh_certs
+name: ssh_certs
 
 # The version of the collection. Must be compatible with semantic versioning
 version: 1.0.0
@@ -42,16 +42,16 @@ tags: []
 dependencies: {}
 
 # The URL of the originating SCM repository
-repository: https://github.com/genirohtea/azure-ssh-certs
+repository: https://github.com/genirohtea/ssh-certs
 
 # The URL to any online docs
-documentation: https://github.com/genirohtea/azure-ssh-certs
+documentation: https://github.com/genirohtea/ssh-certs
 
 # The URL to the homepage of the collection/project
-homepage: https://github.com/genirohtea/azure-ssh-certs
+homepage: https://github.com/genirohtea/ssh-certs
 
 # The URL to the collection issue tracker
-issues: https://github.com/genirohtea/azure-ssh-certs/issues
+issues: https://github.com/genirohtea/ssh-certs/issues
 
 # A list of file glob-like patterns used to filter any files or directories that should not be included in the build
 # artifact. A pattern is matched from the relative path of the file or directory of the collection directory. This

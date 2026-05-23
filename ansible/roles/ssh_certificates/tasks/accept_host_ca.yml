@@ -3,47 +3,12 @@
   tags:
     - accept_host_ca
   vars:
-    # Azure Implementation
     ca_key_type: "pubopenssh"
     ca_type: "hostca"
-    vault_name: "kv-{{ service_name }}-{{ env }}-{{ site }}"
-    secret_name: "kvk-{{ service_name }}-{{ env }}-{{ site }}-{{ ca_type }}-{{ ca_key_type }}"
-    resource_group_name: "rg-{{ service_name }}-{{ env }}-{{ site }}"
-
-    # General
     user_ssh_key_filename: "{{ user }}-{{ env }}-{{ site }}"
 
   block:
-    - name: "Retrieving secrets using Azure"
-      when: use_azure | bool
-      block:
-        - name: Get Key Vault by name
-          azure.azcollection.azure_rm_keyvault_info:
-            resource_group: "{{ resource_group_name }}"
-            name: "{{ vault_name }}"
-          register: key_vault_attrs
-
-        - name: Set key vault URI fact
-          set_fact:
-            key_vault_uri: "{{ key_vault_attrs['keyvaults'][0]['vault_uri'] }}"
-
-        - name: Get secret value
-          azure.azcollection.azure_rm_keyvaultsecret_info:
-            vault_uri: "{{ key_vault_uri }}"
-            name: "{{ secret_name }}"
-          register: ssh_key_attrs
-
-        - name: Set secret fact
-          ansible.builtin.set_fact:
-            ssh_key: "{{ ssh_key_attrs.secrets[0].secret }}"
-
-      rescue:
-        - name: "Getting secrets from Azure failed"
-          ansible.builtin.set_fact:
-            task_failed: true
-
     - name: "Retrieving secrets using BWS"
-      when: not (use_azure | bool)
       block:
         - name: "Get secret value"
           ansible.builtin.set_fact:

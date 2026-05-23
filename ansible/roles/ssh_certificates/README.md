@@ -23,21 +23,16 @@ Ansible 2.14+ on the control node and the following collections (declared
 in `meta/main.yml` and `requirements.yml`):
 
 ```bash
-ansible-galaxy collection install community.crypto community.general azure.azcollection
+ansible-galaxy collection install community.crypto community.general
 ```
 
-The role needs CA keys stored in one of two supported backends:
+The role needs CA keys stored in Bitwarden Secrets Manager: set the env var
+`BWS_ACCESS_TOKEN` on the control node and override `bws_secret_ids` with
+the IDs of your own secrets. The role uses
+`community.general.bitwarden_secrets_manager`.
 
-- **Bitwarden Secrets Manager** (default): set the env var
-  `BWS_ACCESS_TOKEN` on the control node and override `bws_secret_ids` with
-  the IDs of your own secrets. The role uses
-  `community.general.bitwarden_secrets_manager`.
-- **Azure Key Vault** (when `use_azure: true`): the control node must be
-  authenticated to Azure (`az login` or service principal env vars). Vault
-  and secret names are derived from `service_name`, `env`, and `site`.
-
-The Terraform configurations in this repo (`terraform/deployments/`) create
-the matching Key Vault / BWS project and rotate the keys.
+The Terraform configuration in this repo (`terraform/deployments/`) creates
+the matching BWS project and rotates the keys.
 
 Role Variables
 --------------
@@ -68,7 +63,6 @@ Role Variables
 | Variable          | Default       | Notes                                       |
 |-------------------|---------------|---------------------------------------------|
 | `service_name`    | `sshcerts`    | Namespacing prefix for vaults and markers   |
-| `use_azure`       | `false`       | Switch from BWS to Azure Key Vault          |
 | `bws_secret_ids`  | (placeholders)| Replace with your own BWS secret UUIDs      |
 
 Dependencies

@@ -3,8 +3,6 @@
 ## Required Pre-req
 
 ### Local Machine
-`brew update && brew install azure-cli`
-`az login`
 Edit terraform.tfvars to include `state_passphrase = "<state_password>"`
 `tofu init`
 `tofu workspace new prod`

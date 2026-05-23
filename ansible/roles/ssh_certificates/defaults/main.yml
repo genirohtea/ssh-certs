@@ -11,10 +11,6 @@ sign_user_key: false
 accept_host_ca: false
 accept_user_ca: false
 
-# Secret backend selection. When true, retrieve CA keys from Azure Key Vault.
-# When false (default), retrieve them from Bitwarden Secrets Manager.
-use_azure: false
-
 # BWS secret IDs for the SSH CA keys, keyed by "{{ ca_type }}-{{ ca_key_type }}".
 # These default values point at the original genirohtea/ssh-certs deployment.
 # Override this in your consuming playbook with the IDs from your own BWS

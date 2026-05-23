@@ -1,6 +1,6 @@
 [env]
 # Arbitrary Environment Variables
-geniroh_PROJECT_NAME = 'azure-ssh-certs'
+geniroh_PROJECT_NAME = 'ssh-certs'
 
 [tools]
 # Specify tooling versions

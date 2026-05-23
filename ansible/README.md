@@ -1,7 +1,7 @@
 # Ansible Collection - geniroh.ssh_certs
 
 Ansible roles and playbooks for setting up SSH-certificate-based authentication
-backed by Azure Key Vault or Bitwarden Secrets Manager (BWS).
+backed by Bitwarden Secrets Manager (BWS).
 
 Two entry-point scripts wrap the playbooks:
 
@@ -10,8 +10,7 @@ Two entry-point scripts wrap the playbooks:
 - [`setup_user_workstation.sh`](setup_user_workstation.sh) — provisions the
   local workstation so it has a signed user certificate and trusts the host CA.
 
-By default both scripts retrieve CA keys from BWS. Pass `--azure` to use Azure
-Key Vault instead.
+Both scripts retrieve CA keys from BWS.
 
 ## Running the scripts
 
@@ -35,7 +34,6 @@ Useful flags:
 - `--ansible_user <user>` — user Ansible connects as (default: `root`).
 - `--disable_key_check` — bypass strict host key checking. Use after a
   certificate expires and your workstation has been configured to enforce it.
-- `--azure` — fetch CA keys from Azure Key Vault instead of BWS.
 - `--tags <tags>` — run a subset of role tags (`sign_host_key`,
   `accept_user_ca`).
 
@@ -60,7 +58,6 @@ Useful flags:
 
 - `--add_root` — include `root` in the certificate principals.
 - `--principals <csv>` — extra principals beyond `--user`.
-- `--azure` — fetch CA keys from Azure Key Vault instead of BWS.
 - `--tags <tags>` — run a subset of role tags (`sign_user_key`,
   `accept_host_ca`).
 

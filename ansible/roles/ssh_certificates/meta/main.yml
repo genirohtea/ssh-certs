@@ -38,4 +38,3 @@ dependencies: []
 collections:
   - community.crypto       # openssh_keypair
   - community.general      # bitwarden_secrets_manager lookup, ssh_config
-  - azure.azcollection     # azure_rm_keyvault_info, azure_rm_keyvaultsecret_info (only when use_azure: true)

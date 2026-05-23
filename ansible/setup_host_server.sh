@@ -30,7 +30,6 @@ Available options:
 
 -h, --help      Print this help and exit
 -v, --verbose   Print script debug info
--a, --azure     Use azure instead of bws
 -t, --tags      Specify Ansible tags to run specific tasks
 -H, --host      Specify the host from the Ansible inventory to run the playbook on
 -s, --site      The site the workstation will connect to
@@ -53,7 +52,6 @@ die() {
 
 tags=''
 disable_key_check='false'
-azure='false'
 use_ssh_pass='false'
 parse_params() {
   while :; do
@@ -92,7 +90,6 @@ parse_params() {
       shift
       ;;
     -d | --disable_key_check) disable_key_check='true' ;; # example flag
-    -A | --azure) azure='true' ;;                         # example flag
     -S | --use_ssh_pass) use_ssh_pass='true' ;;           # example flag
     -?*) die "Unknown option: $1" ;;
     *) break ;;
@@ -131,7 +128,6 @@ parse_params "$@"
 msg "Read parameters:"
 msg "- arguments: ${args[*]-}"
 msg "- environment: ${env-}"
-msg "- azure: ${azure-}"
 msg "- host: ${host-}"
 msg "- site: ${site-}"
 msg "- ansible_user: ${ansible_user-}"
@@ -178,7 +174,7 @@ fi
 set -x
 
 # shellcheck disable=SC2086
-ansible-playbook setup_host_server.yml ${ssh_pass:-} ${verbosity:-} -u "${ansible_user}" ${tags} --extra-vars '{"site": '"${site}"', "env": '"${env}"', "expiry": '"${expiry}"', "principals": '"${principals}"', "identity": '"${host}"', "use_azure": '"${azure}"' }' -i "${host}",
+ansible-playbook setup_host_server.yml ${ssh_pass:-} ${verbosity:-} -u "${ansible_user}" ${tags} --extra-vars '{"site": '"${site}"', "env": '"${env}"', "expiry": '"${expiry}"', "principals": '"${principals}"', "identity": '"${host}"' }' -i "${host}",
 
 # Turn off verbosity
 set -x

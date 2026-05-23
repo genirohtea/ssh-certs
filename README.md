@@ -1,1 +1,1 @@
-# Azure SSH Certificate
+# SSH Certificate
