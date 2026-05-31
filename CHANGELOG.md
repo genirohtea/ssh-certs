@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/genirohtea/ssh-certs/compare/v1.1.0...v1.2.0) (2026-05-31)
+
+
+### Features
+
+* **ssh agent:** support certifying keys that are in an ssh-agent ([3284775](https://github.com/genirohtea/ssh-certs/commit/328477584eb98da14437444965b8e8b4cc925c13))
+
 ## [1.1.0](https://github.com/genirohtea/ssh-certs/compare/v1.0.0...v1.1.0) (2024-09-03)
 
 
