@@ -174,7 +174,7 @@ fi
 set -x
 
 # shellcheck disable=SC2086
-ansible-playbook setup_host_server.yml ${ssh_pass:-} ${verbosity:-} -u "${ansible_user}" ${tags} --extra-vars '{"site": '"${site}"', "env": '"${env}"', "expiry": '"${expiry}"', "principals": '"${principals}"', "identity": '"${host}"' }' -i "${host}",
+ansible-playbook setup_host_server.yml ${ssh_pass:-} ${verbosity:-} -u "${ansible_user}" ${tags} --extra-vars '{"site": "'"${site}"'", "env": "'"${env}"'", "expiry": "'"${expiry}"'", "principals": "'"${principals}"'", "identity": "'"${host}"'" }' -i "${host}",
 
 # Turn off verbosity
 set -x
